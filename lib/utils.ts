@@ -36,28 +36,21 @@ export function extractCurrency(element: any) {
   return currencyText ? currencyText : "";
 }
 
-// Extracts description from two possible elements from amazon
-export function extractDescription($: any) {
-  // these are possible elements holding description of the product
-  const selectors = [
-    ".a-unordered-list .a-list-item",
-    ".a-expander-content p",
-    // Add more selectors here if needed
-  ];
 
-  for (const selector of selectors) {
-    const elements = $(selector);
-    if (elements.length > 0) {
-      const textContent = elements
-        .map((_: any, element: any) => $(element).text().trim())
-        .get()
-        .join("\n");
-      return textContent;
-    }
+export function extractReviewsCount(element: any){
+  const reviewText = element.text();
+  if (reviewText){
+    return reviewText.match(/\d{1,3}(,\d{3})*(\.\d+)?/)[0].replace(/,/g, '');
   }
+  return 0;
+}
 
-  // If no matching elements were found, return an empty string
-  return "";
+export function extractStars(element: any){
+  const starAttr = element.attr('title');
+  if (starAttr){
+    return starAttr.match(/(\d+\.\d+)/)[0];
+  }
+  return 0;
 }
 
 export function getHighestPrice(priceList: PriceHistoryItem[]) {

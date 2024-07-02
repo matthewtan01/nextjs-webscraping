@@ -20,18 +20,7 @@ const Navbar = () => {
             alt='logo'/>
             <p className='nav-logo'>Price<span className='text-primary'>Wise</span></p>
         </Link>
-        <div className='flex items-center gap-5'>
-          {navIcons.map((icon) => (
-            <Image 
-              key={icon.alt}
-              src={icon.src}
-              alt={icon.alt}
-              width={28}
-              height={28}
-              className='object-contain cursor-pointer'
-              />
-          ))}
-        </div>
+
       </nav>
     </header>
   )

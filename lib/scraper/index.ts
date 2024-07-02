@@ -1,6 +1,11 @@
 import axios from "axios";
 import * as cheerio from "cheerio";
-import { extractCurrency, extractDescription, extractPrice } from "../utils";
+import {
+  extractCurrency,
+  extractPrice,
+  extractReviewsCount,
+  extractStars,
+} from "../utils";
 
 export async function scrapeAmazonProduct(url: string) {
   if (!url) return;
@@ -53,7 +58,14 @@ export async function scrapeAmazonProduct(url: string) {
 
     const discountRate = $(".savingsPercentage").text().replace(/[-%]/g, "");
 
-    const description = extractDescription($);
+    const aboutThisItem = $("#feature-bullets .a-unordered-list .a-list-item");
+    const features = aboutThisItem.map((i, el) => $(el).text().trim()).get();
+
+    const reviewsCount = extractReviewsCount(
+      $("#acrCustomerReviewText.a-size-base")
+    );
+
+    const stars = extractStars($("#acrPopover.reviewCountTextLinkedHistogram"));
 
     const data = {
       url,
@@ -65,16 +77,17 @@ export async function scrapeAmazonProduct(url: string) {
       priceHistory: [],
       discountRate: Number(discountRate),
       category: "category",
-      reviewsCount: 100,
-      stars: 4.5,
-      isOutofStock: outOfStock,
-      description,
+      reviewsCount: Number(reviewsCount),
+      stars: Number(stars),
+      isOutOfStock: outOfStock,
+      description: features,
       lowestPrice: Number(currentPrice) || Number(originalPrice),
       highestPrice: Number(originalPrice) || Number(currentPrice),
-      average: Number(currentPrice) || Number(originalPrice)
+      averagePrice: Number(currentPrice) || Number(originalPrice),
     };
 
-    return data
+    console.log(data);
+    return data;
   } catch (error: any) {
     throw new Error(`Failed to scrape product: ${error.message}`);
   }
